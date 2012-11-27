@@ -13,6 +13,7 @@ import sys
 import datetime
 import pytz
 
+from store_parameters import store_parameters
 
 TEL_LONG_DEG = 1.583
 TEL_LAT_DEG = 54.767
@@ -22,19 +23,6 @@ URL = 'http://ssd.jpl.nasa.gov/horizons.cgi'
 
 session_id = None
 
-def store_parameters(func):
-	cache = None
-
-	def memoizedFunction(param):
-		if not cache:
-			print "Calling func..."
-			cache = func(param)
-		print param,cache
-		return cache
-	
-	memoizedFunction.cache = cache
-	return memoizedFunction
-
 def query(params):
 	params = urllib.urlencode(params)
 	urllib.urlopen(URL, params).close()
@@ -43,7 +31,7 @@ def query(params):
 def set_target(target):
 	"""Tell Horizons which object we want ephemeris for"""
 	
-	print "Checking target " + target + " exists ... "
+	# print "Checking target " + target + " exists ... "
 	
 	params = urllib.urlencode({
 		'sstr' : target,
@@ -62,7 +50,7 @@ def set_target(target):
 
 	jpl.close()
 
-	print "Setting target to " + target + "... "
+	# print "Setting target to " + target + "... "
 
 	params = {
 		'body' : target,
@@ -80,7 +68,7 @@ def set_target(target):
 def set_observer(observer):
 	"""Set observer location"""
 
-	print "Setting observer location ... "
+	# print "Setting observer location ... "
 	
 	params = {
 		# 'lon' : TEL_LONG_DEG,
@@ -102,7 +90,7 @@ def set_observer(observer):
 def set_time(time):
 	"""Set date and time"""
 
-	print "Setting date and time ..."
+	# print "Setting date and time ..."
 	
 	end_time = calculate_end_time(time)
 
@@ -142,7 +130,7 @@ def calculate_end_time(time):
 def get_ephemeris():
 	"""Generate ephemeris"""
 
-	print "Generating ephemeris ..."
+	# print "Generating ephemeris ..."
 
 	params = urllib.urlencode({
 		'go' : 'Generate Ephemeris',
@@ -151,7 +139,7 @@ def get_ephemeris():
 
 	jpl = urllib.urlopen(URL, params)
 
-	print "Extracting position ... "
+	# print "Extracting position ... "
 
 	for line in jpl:
 #		print line
@@ -179,7 +167,7 @@ def new_session():
 	
 	global session_id
 
-	print "Getting JPL session ID ... "
+	# print "Getting JPL session ID ... "
 	
 	jpl = urllib.urlopen(URL+'?')
 
