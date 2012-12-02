@@ -1,11 +1,12 @@
 def store_parameters(func):
 	cache = {}
 
-	def memoizedFunction(*param):
-		if 'param' not in cache or cache['param'] is not param:
+	def memoizedFunction(param):
+		print param,cache
+		if 'params' not in cache or cache['params'] is not param:
 			print "Calling func..."
-			cache['param'] = param
-			func(*param)
+			cache['params'] = param
+			func(param)
 		print param,cache
 		return cache
 	
