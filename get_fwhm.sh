@@ -1,8 +1,8 @@
 #!/bin/sh
 
-star_dir="/star"
+STARLINK_DIR=${STARLINK_DIR:-/star}
 
-source ${star_dir}/etc/profile
+source ${STARLINK_DIR}/etc/profile
 
 fits=$1
 ra=$2

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-star_dir=/Users/laurence/Coding/star
+STARLINK_DIR=${STARLINK_DIR:-/star}
 
-source ${star_dir}/etc/profile
+source ${STARLINK_DIR}/etc/profile
 
 # load starlink packages
 convert > /dev/null
@@ -15,7 +15,7 @@ xmake xwindows -width 800 -height 600
 for fits in "$@"
 do
 	echo $fits
-	
+
 	# display image
 	display $fits noaxes mode=faint clear=true > /dev/null
 
