@@ -7,7 +7,8 @@ def ra2deg(ra):
 	return 15*ra2hr(ra)
 
 def dec2deg(dec):
-	return cmp(dec[0],0)*sum(map(lambda x,y: abs(float(x))/float(y), dec, (1, 60, 3600)))
+	sign = float(dec[0])/abs(float(dec[0]))
+	return sign*sum(map(lambda x,y: abs(float(x))/float(y), dec, (1, 60, 3600)))
 
 def delta_ra(ra1,ra2):
 	ra_delta = map(lambda x,y: float(x)-float(y), ra1, ra2)
