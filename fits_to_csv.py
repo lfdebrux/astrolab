@@ -3,7 +3,7 @@
 import find_jpl_position as jpl
 import os, sys, subprocess, StringIO
 
-from utils import *
+from utils import delta_ra,delta_dec
 from get_fwhm_snr_from_asc import run_sextractor,find_target_in_catalogue
 
 UCAC4 = '/remote/aa_64bin/auto_astrom/ucac4_find_astrom.py'
@@ -36,7 +36,6 @@ def run_ucac4_astrom(fits):
 	"""
 	Get the most accurate astrometry available
 	"""
-
 	subprocess.call([UCAC4,fits])
 
 	return a+fits
@@ -88,6 +87,7 @@ if __name__ == '__main__':
 
 			target,date_time = get_obs_details(fits)
 			ra_jpl,dec_jpl = get_jpl_ra_dec(target,date_time)
+			fits = run_ucac4_astrom(fits)
 			ra_astrom,dec_astrom,snr,fwhm = get_astrom_ra_dec_snr_fwhm(fits)
 		else:
 			ra_delta = str(delta_ra(ra_jpl,ra_astrom))
@@ -110,6 +110,6 @@ if __name__ == '__main__':
 			output.write("\n")
 		finally:
 			# always cleanup and chdir
-			cleanup(os.getcwd())
+			subprocess.call("rm -f aad* *.ASC *.dat *_new *.lis asc* ucac4_stars", shell=True)
 			output.close()
 			os.chdir(cwd)
