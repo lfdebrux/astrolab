@@ -150,10 +150,8 @@ def cleanup(dir):
 	"""
 	Delete anything that isn't an original fits file. Verrrry dangerous.
 	We ask for dir so you think about where you're running it.
-	Probably not a good idea anyway. Also some uncertainty about which shell
-	it uses, so might not even working
+	Probably not a good idea anyway.
 	"""
 	global subprocess
 	if subprocess is None: import subprocess
-	
-	subprocess.call("shopts -s extglob; rm -f !(ad*.fits) " + dir, shell=True)
+	subprocess.call("bash -c 'shopts -s extglob; rm -f !(ad*.fits) " + dir + "'")
