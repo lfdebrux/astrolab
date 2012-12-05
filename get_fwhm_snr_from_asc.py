@@ -1,8 +1,6 @@
 import os,subprocess,sys
 from math import sqrt
-from utils import cleanup
-
-# from jrl_utils import deg2dms,deg2hms
+from utils import cleanup,deg2dmstuple,deg2hmstuple
 
 def run_sextractor(fits):
 	"""
@@ -30,8 +28,8 @@ def find_target_in_catalogue(catalogue,ra,dec):
 
 			if round(ra-ra_cat,2) == 0 and round(dec-dec_cat,2) == 0:
 				peak,background,fwhm = map(float,line.split()[7:])
-				# ra_cat = deg2hms(ra_cat)
-				# dec_cat = deg2dms(dec_cat)
+				ra_cat = deg2hmstuple(ra_cat)
+				dec_cat = deg2dmstuple(dec_cat)
 				fwhm = fwhm * 3600
 				snr = get_snr(peak,background)
 				return ra_cat,dec_cat,snr,fwhm
