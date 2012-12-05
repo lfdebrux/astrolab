@@ -1,5 +1,8 @@
-def ra2deg(ra):
+def ra2hr(ra):
 	return sum(map(lambda float(x),float(y): x/y, ra, (1, 24, 1440)))
+
+def ra2deg(ra):
+	return 15*ra2hr(ra)
 
 def dec2deg(dec):
 	return sum(map(lambda x,y: float(x)/float(y), dec, (1, 60, 3600)))
