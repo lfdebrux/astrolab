@@ -1,3 +1,5 @@
+re = None
+
 def ra2hr(ra):
 	return dec2deg(ra)
 
@@ -16,7 +18,16 @@ def delta_dec(dec1,dec2):
 	return dec2deg(dec_delta)
 
 def deg2dmstuple(dec):
-	return dmsStrFromDeg(ra).split(':')
+	return tuple(dmsStrFromDeg(ra).split(':'))
+
+def deg2hmstuple(ra):
+	# only import re when we need it
+	global re
+	if re is None: import re
+
+	ra = ra.split('[hms]',deg2hms(ra))
+	del ra[-1] # get rid of trailing ''
+	return tuple(ra)
 
 def deg2dms(degree):
 	"""
