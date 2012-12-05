@@ -1,6 +1,6 @@
 """
 Utilities for various common things we might need to do while working on astrolab data.
-Mostly manipulations for RA and Dec, also includes a verrrrry dangerous cleanup command
+Mostly manipulations for RA and Dec
 """
 
 # placeholders for packages we may or may not need
