@@ -15,14 +15,17 @@ def delta_dec(dec1,dec2):
 	dec_delta = map(lambda x,y: float(x)-float(y), dec1, dec2)
 	return dec2deg(dec_delta)
 
+def deg2dmstuple(dec):
+	return dmsStrFromDeg(ra).split(':')
+
 def deg2dms(degree):
 	"""
 	from jrl_utils.py
 	"""
-    out=dmsStrFromDeg(degree)
-    out2=out.replace(':','d',1)
-    out3=out2.replace(':','m',1)
-    return (out3 + 's')
+	out=dmsStrFromDeg(degree)
+	out2=out.replace(':','d',1)
+	out3=out2.replace(':','m',1)
+	return (out3 + 's')
 #    sign = '+'
 #    if degree < 0.0: sign = '-'
 #    degree = abs(degree)
@@ -33,21 +36,21 @@ def deg2dms(degree):
 #    isec = int(sec)
 #    frac = int((sec - float(isec))*10.+0.5)
 #    out = "%s%2.2dd%2.2dm%2.2d.%1ds" % (sign,ideg,mins,sec,frac)
-    return out
+	return out
  
 def deg2hms(degree):
 	"""
 	from jrl_utils.py
 	"""
-    hour = degree/15.
-    ihour=int(hour)
-    mind=abs(hour-ihour)*60
-    mins=int(mind)
-    sec=(mind-mins)*60
-    isec = int(sec)
-    frac = int((sec - float(isec))*100.+0.5)
-    out = "%2.2dh%2.2dm%2.2d.%2.2ds" % (ihour,mins,sec,frac)
-    return out
+	hour = degree/15.
+	ihour=int(hour)
+	mind=abs(hour-ihour)*60
+	mins=int(mind)
+	sec=(mind-mins)*60
+	isec = int(sec)
+	frac = int((sec - float(isec))*100.+0.5)
+	out = "%2.2dh%2.2dm%2.2d.%2.2ds" % (ihour,mins,sec,frac)
+	return out
 
 def dmsStrFromDeg (decDeg, nFields=3, precision=1, omitExtraFields = False):
 	"""
@@ -56,8 +59,8 @@ def dmsStrFromDeg (decDeg, nFields=3, precision=1, omitExtraFields = False):
 	Inputs:
 	- decDeg: value in decimal degrees or hours
 	- nFields: number of fields; <=1 for dddd.ddd,
-                                       2 for dddd:mm.mmm,
-                                     >=3 for dddd:mm:ss.sss
+									   2 for dddd:mm.mmm,
+									 >=3 for dddd:mm:ss.sss
 	- precision: number of digits after the decimal point in thelast field;
 		if 0, no decimal point is printed; must be >= 0
 	- omitExtraFields: omit fields that are zero, starting from the right
@@ -70,7 +73,7 @@ def dmsStrFromDeg (decDeg, nFields=3, precision=1, omitExtraFields = False):
 	if nFields <= 1:
 		return "%.*f" % (precision, decDeg)
 	nFields = min(3, nFields)
-        # to allow more than 3 fields, omit this statement
+		# to allow more than 3 fields, omit this statement
 
 	if decDeg < 0:
 		signStr = "-"
