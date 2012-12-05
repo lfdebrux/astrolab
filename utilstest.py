@@ -37,6 +37,16 @@ class KnownValues(unittest.TestCase):
 			result = utils.ra2deg(ra)
 			self.assertAlmostEqual(deg,result,places=2)
 
+	def testToKnownDecValues(self):
+		"""
+		dec2deg should give known result to known input,
+		within error
+		"""
+
+		for dec,deg in self.knownDecValues:
+			result = utils.dec2deg(dec)
+			self.assertAlmostEqual(deg,result,places=2)
+
 
 if __name__ == '__main__':
 	unittest.main()
