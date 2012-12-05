@@ -68,14 +68,15 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Analyse a series of fits files for unknown objects, " \
 												 "and save the positions and properties of these objects to one .csv file"
 									)
-	parser.add_argument('f',metavar='fits',nargs='+',help='a fits file to analyse')
-	parser.add_argument('output',metavar='csv',help='a csv file to store the data. Must end in .csv')
-	output_filename = sys.argv[-1]
+	parser.add_argument('fits_files',metavar='fits',nargs='+',help='a fits file to analyse')
+	parser.add_argument('output_file',metavar='csv',help='a csv file to store the data. Must end in .csv')
 
-	if not '.csv' in output_filename:
+	args = parser.parse_args()
+
+	if not '.csv' in output_file:
 		raise ValueError('Write file is not a csv!')
 
-	output = open(output_filename, "w")
+	output = open(output_file, "w")
 	headers = "Object,Date,Time,Ast.RA,Ast.Dec,JPL RA,JPL Dec,RA Delta,Dec Delta,Astrom Number,Astrom RMS,SNR,FWHM"
 	output.write(headers)
 	output.write("\n")
@@ -84,7 +85,7 @@ if __name__ == '__main__':
 
 	jpl.new_session()
 
-	for f in sys.argv[1:-1]:	
+	for file in fits_files:	
 		try:
 			if not dir is '':
 				os.chdir(dir)
