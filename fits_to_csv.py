@@ -3,6 +3,8 @@
 import find_jpl_position as jpl
 import os, sys, subprocess, StringIO
 
+from utils import *
+
 output_filename = sys.argv[-1]
 
 if not '.csv' in output_filename:
@@ -31,8 +33,8 @@ for file in sys.argv[1:-1]:
 	
 	ra_astrom,dec_astrom = get_astrom_ra_dec(fits)
 	
-	ra_delta = delta_ra(ra_jpl,ra_astrom)
-	dec_delta = delta_dec(dec_jpl,dec_astrom)
+	ra_delta = str(delta_ra(ra_jpl,ra_astrom))
+	dec_delta = str(delta_dec(dec_jpl,dec_astrom))
 	
 	fwhm = get_fwhm(file,ra_astrom,dec_astrom)
 	
@@ -58,7 +60,7 @@ def get_obs_details(fits):
 	
 	return target,date_time
 
-def get_jpl_ra_dec(target,date_time)
+def get_jpl_ra_dec(target,date_time):
 	jpl.set_target(target)
 	jpl.set_time(date_time)
 	
@@ -68,7 +70,7 @@ def get_jpl_ra_dec(target,date_time)
 	
 	return ra_jpl,dec_jpl
 
-def get_astrom_ra_dec(fits)
+def get_astrom_ra_dec(fits):
 	astrom_command = '/remote/aa_64bin/auto_astrom/ucac4_find_astrom.py '
 	astrom_command += fits
 	astrom_command += ' | '
@@ -76,7 +78,7 @@ def get_astrom_ra_dec(fits)
 	
 	astrom_new = StringIO.StringIO(subprocess.check_output(astrom_command, shell=True))
 	
-	subprocess.call("rm -f aad* *.ASC *.dat *_new *.lis asc* ucac4_stars", shell=True)
+	cleanup(os.getcwd())
 	
 	i=0
 	for line in astrom_new:
@@ -102,16 +104,6 @@ def get_astrom_ra_dec(fits)
 		continue
 	
 	return ra_astrom,dec_astrom
-
-def delta_ra(ra1,ra2):
-	ra_delta = map(lambda x,y: float(x)-float(y), ra1, ra2)
-	ra_delta = str(sum(map(lambda x,y: x/y, ra_delta, (1, 24, 1440))))
-	return ra_delta
-
-def delta_dec(dec1,dec2):
-	dec_delta = map(lambda x,y: float(x)-float(y), dec1, dec2)
-	dec_delta = str(sum(map(lambda x,y: x/y, dec_delta, (1, 60, 3600))))	
-	return dec_delta
 
 def get_fwhm(fits,ra,dec):
 	ra = ':'.join(ra)
