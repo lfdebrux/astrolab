@@ -6,7 +6,7 @@ import os, sys, subprocess, StringIO
 from utils import *
 from get_fwhm_snr_from_asc import run_sextractor,find_target_in_catalogue
 
-astrom_command = '/remote/aa_64bin/auto_astrom/ucac4_find_astrom.py'
+UCAC4 = '/remote/aa_64bin/auto_astrom/ucac4_find_astrom.py'
 
 def get_obs_details(fits):
 	"""
@@ -31,6 +31,15 @@ def get_jpl_ra_dec(target,date_time):
 	ra_jpl, dec_jpl = ra_jpl.split(), dec_jpl.split()
 	
 	return ra_jpl,dec_jpl
+
+def run_ucac4_astrom(fits):
+	"""
+	Get the most accurate astrometry available
+	"""
+
+	subprocess.call([UCAC4,fits])
+
+	return a+fits
 
 def get_astrom_ra_dec_snr_fwhm(fits,ra,dec):
 	"""
