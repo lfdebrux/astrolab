@@ -8,27 +8,34 @@ re = None
 subprocess = None
 
 def ra2hr(ra):
+	"""Turn an RA tuple into one number in hours"""
 	return dec2deg(ra)
 
 def ra2deg(ra):
+	"""Turn an RA tuple into one number in degrees of arc"""
 	return 15*ra2hr(ra)
 
 def dec2deg(dec):
+	"""Turn a Dec tuple into one number in degress of arc"""
 	sign = float(dec[0])/abs(float(dec[0]))
 	return sign*sum(map(lambda x,y: abs(float(x))/float(y), dec, (1, 60, 3600)))
 
 def delta_ra(ra1,ra2):
+	"""Subtract two RA tuples and return the result as one number in degrees of arc"""
 	ra_delta = map(lambda x,y: float(x)-float(y), ra1, ra2)
 	return ra2deg(ra_delta)
 
 def delta_dec(dec1,dec2):
+	"""Subtract two Dec tuples and return the result as one number in degrees of arc"""
 	dec_delta = map(lambda x,y: float(x)-float(y), dec1, dec2)
 	return dec2deg(dec_delta)
 
 def deg2dmstuple(dec):
+	"""Take a number in degrees of arc and return a Dec tuple"""
 	return tuple(dmsStrFromDeg(dec).split(':'))
 
 def deg2hmstuple(ra):
+	"""Take a number in degrees of arc and return an RA tuple"""
 	# only import re when we need it
 	global re
 	if re is None: import re
@@ -38,9 +45,7 @@ def deg2hmstuple(ra):
 	return tuple(ra)
 
 def deg2dms(degree):
-	"""
-	from jrl_utils.py
-	"""
+	"""from jrl_utils.py"""
 	out=dmsStrFromDeg(degree)
 	out2=out.replace(':','d',1)
 	out3=out2.replace(':','m',1)
@@ -58,9 +63,7 @@ def deg2dms(degree):
 	return out
  
 def deg2hms(degree):
-	"""
-	from jrl_utils.py
-	"""
+	"""from jrl_utils.py"""
 	hour = degree/15.
 	ihour=int(hour)
 	mind=abs(hour-ihour)*60
