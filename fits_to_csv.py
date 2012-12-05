@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
-import find_jpl_position as jpl
+import get_jpl_position as jpl
 import os, sys, subprocess, StringIO
 
 from utils import delta_ra,delta_dec
-from get_fwhm_snr_from_asc import run_sextractor,find_target_in_catalogue
+from get_data_from_asc import run_sextractor,find_target_in_catalogue
 
 UCAC4 = '/remote/aa_64bin/auto_astrom/ucac4_find_astrom.py'
 
@@ -63,7 +63,13 @@ def get_fwhm(fits,ra,dec):
 	return fwhm
 
 if __name__ == '__main__':
+	import argparse
 
+	parser = argparse.ArgumentParser(description="Analyse a series of fits files for unknown objects, " \
+												 "and save the positions and properties of these objects to one .csv file"
+									)
+	parser.add_argument('f',metavar='fits',nargs='+',help='a fits file to analyse')
+	parser.add_argument('output',metavar='csv',help='a csv file to store the data. Must end in .csv')
 	output_filename = sys.argv[-1]
 
 	if not '.csv' in output_filename:
@@ -78,7 +84,7 @@ if __name__ == '__main__':
 
 	jpl.new_session()
 
-	for file in sys.argv[1:-1]:	
+	for f in sys.argv[1:-1]:	
 		try:
 			if not dir is '':
 				os.chdir(dir)
@@ -89,6 +95,8 @@ if __name__ == '__main__':
 			ra_jpl,dec_jpl = get_jpl_ra_dec(target,date_time)
 			fits = run_ucac4_astrom(fits)
 			ra_astrom,dec_astrom,snr,fwhm = get_astrom_ra_dec_snr_fwhm(fits)
+		except RuntimeError:
+			print 'Error'
 		else:
 			ra_delta = str(delta_ra(ra_jpl,ra_astrom))
 			dec_delta = str(delta_dec(dec_jpl,dec_astrom))
