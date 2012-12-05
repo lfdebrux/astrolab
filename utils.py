@@ -1,4 +1,11 @@
+"""
+Utilities for various common things we might need to do while working on astrolab data.
+Mostly manipulations for RA and Dec, also includes a verrrrry dangerous cleanup command
+"""
+
+# placeholders for packages we may or may not need
 re = None
+subprocess = None
 
 def ra2hr(ra):
 	return dec2deg(ra)
@@ -19,14 +26,14 @@ def delta_dec(dec1,dec2):
 	return dec2deg(dec_delta)
 
 def deg2dmstuple(dec):
-	return tuple(dmsStrFromDeg(ra).split(':'))
+	return tuple(dmsStrFromDeg(dec).split(':'))
 
 def deg2hmstuple(ra):
 	# only import re when we need it
 	global re
 	if re is None: import re
 
-	ra = ra.split('[hms]',deg2hms(ra))
+	ra = re.split('[hms]',deg2hms(ra))
 	del ra[-1] # get rid of trailing ''
 	return tuple(ra)
 
@@ -140,4 +147,13 @@ def dmsStrFromDeg (decDeg, nFields=3, precision=1, omitExtraFields = False):
 	return ":".join(fieldList)
 
 def cleanup(dir):
+	"""
+	Delete anything that isn't an original fits file. Verrrry dangerous.
+	We ask for dir so you think about where you're running it.
+	Probably not a good idea anyway. Also some uncertainty about which shell
+	it uses, so might not even working
+	"""
+	global subprocess
+	if subprocess is None: import subprocess
+	
 	subprocess.call("shopts -s extglob; rm -f !(ad*.fits) " + dir, shell=True)
