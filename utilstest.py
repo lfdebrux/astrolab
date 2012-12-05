@@ -27,6 +27,16 @@ class KnownValues(unittest.TestCase):
 			result = utils.ra2hr(ra)
 			self.assertAlmostEqual(hr,result,places=2)
 
+	def testToKnownRaDegValues(self):
+		"""
+		ra2hr should give known result to known input,
+		within error
+		"""
+
+		for ra,hr,deg in self.knownRaValues:
+			result = utils.ra2deg(ra)
+			self.assertAlmostEqual(deg,result,places=2)
+
 
 if __name__ == '__main__':
 	unittest.main()
