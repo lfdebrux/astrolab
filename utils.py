@@ -145,13 +145,3 @@ def dmsStrFromDeg (decDeg, nFields=3, precision=1, omitExtraFields = False):
 			fieldList.pop(-1)
 
 	return ":".join(fieldList)
-
-def cleanup(dir):
-	"""
-	Delete anything that isn't an original fits file. Verrrry dangerous.
-	We ask for dir so you think about where you're running it.
-	Probably not a good idea anyway.
-	"""
-	global subprocess
-	if subprocess is None: import subprocess
-	subprocess.call("bash -c 'shopts -s extglob; rm -f !(ad*.fits) " + dir + "'")
