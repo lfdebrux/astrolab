@@ -3,6 +3,16 @@ from math import sqrt
 
 # from jrl_utils import deg2dms,deg2hms
 
+def run_sextractor(fits):
+	sextractor = os.path.join(os.environ['STARLINK_DIR'],'bin/extractor/sex')
+	config_file = './ascfit.sex'
+
+	catalogue = os.path.splitext(fits)[0] + '.cat'
+
+	subprocess.call([sextractor,'-c',config_file,fits,'-CATALOG_NAME',catalogue])
+
+	return catalogue
+
 def find_target_in_catalogue(catalogue,ra,dec):
 	file = open(catalogue)
 
@@ -33,13 +43,12 @@ def get_snr(peak,bg):
 if __name__ == '__main__':
 	from utils import ra2deg,dec2deg
 
-	sextractor = os.path.join(os.environ['STARLINK_DIR'],'bin/extractor/sex')
-	config_file = './ascfit.sex'
+	
 
 	fits = sys.argv[1]
 	ra = ra2deg(map(float,sys.argv[2].split(':')))
 	dec = dec2deg(map(float,sys.argv[3].split(':')))
 
-	subprocess.call([sextractor,'-c',config_file,fits])
+	catalogue = run_sextractor(fits)
 
-	print find_target_in_catalogue('asc_sextr.cat',ra,dec)
+	print find_target_in_catalogue(catalogue,ra,dec)
