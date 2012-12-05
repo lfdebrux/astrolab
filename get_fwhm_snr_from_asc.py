@@ -1,6 +1,6 @@
 import os,subprocess,sys
 from math import sqrt
-from utils import cleanup,deg2dmstuple,deg2hmstuple
+from utils import deg2dmstuple,deg2hmstuple
 
 def run_sextractor(fits):
 	"""
@@ -18,7 +18,10 @@ def run_sextractor(fits):
 	return catalogue
 
 def find_target_in_catalogue(catalogue,ra,dec):
-	
+	"""
+	Read catalogue and return ra and dec according to sextractor,
+	peak SNR, and FWHM in arcseconds
+	"""
 	with open(catalogue) as f:
 		for line in f:
 			# skip comments
@@ -30,7 +33,7 @@ def find_target_in_catalogue(catalogue,ra,dec):
 				peak,background,fwhm = map(float,line.split()[7:])
 				ra_cat = deg2hmstuple(ra_cat)
 				dec_cat = deg2dmstuple(dec_cat)
-				fwhm = fwhm * 3600
+				fwhm = fwhm * 3600 # convert to arcseconds
 				snr = get_snr(peak,background)
 				return ra_cat,dec_cat,snr,fwhm
 		else:
@@ -55,4 +58,4 @@ if __name__ == '__main__':
 
 	print find_target_in_catalogue(catalogue,ra,dec)
 
-	cleanup(os.getcwd())
+	os.remove(catalogue) # cleanup after ourselves
