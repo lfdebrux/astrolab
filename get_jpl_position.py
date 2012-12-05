@@ -1,7 +1,7 @@
 """
 Get RA and Dec for an target from JPL Horizons.
 Useage:
-find_jpl_position.py target_name time
+get_jpl_position.py target_name time
 
 where time is in ISO format, ie
 'YYYY-MM-DD hh:mm:ss'
