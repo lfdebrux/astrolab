@@ -6,6 +6,7 @@ Mostly manipulations for RA and Dec
 # placeholders for packages we may or may not need
 re = None
 subprocess = None
+math = None
 
 def ra2hr(ra):
 	"""Turn an RA tuple into one number in hours"""
@@ -17,18 +18,26 @@ def ra2deg(ra):
 
 def dec2deg(dec):
 	"""Turn a Dec tuple into one number in degress of arc"""
-	sign = float(dec[0])/abs(float(dec[0]))
-	return sign*sum(map(lambda x,y: abs(float(x))/float(y), dec, (1, 60, 3600)))
+	# only import math when we need it
+	global math
+	if math is None: import math
+	
+	sign = reduce(lambda x,y: x*y,
+		#map(lambda x: math.copysign(1,float(x)),dec)
+		[math.copysign(1,float(x)) for x in dec]
+		)
+	return sign*sum(
+		#map(lambda x,y: abs(float(x))/float(y), dec, (1, 60, 3600))
+		[abs(float(x))/float(y) for x,y in zip(dec,(1,60,3600))]
+		)
 
 def delta_ra(ra1,ra2):
 	"""Subtract two RA tuples and return the result as one number in degrees of arc"""
-	ra_delta = map(lambda x,y: float(x)-float(y), ra1, ra2)
-	return ra2deg(ra_delta)
+	return ra2deg(ra1)-ra2deg(ra2)
 
 def delta_dec(dec1,dec2):
 	"""Subtract two Dec tuples and return the result as one number in degrees of arc"""
-	dec_delta = map(lambda x,y: float(x)-float(y), dec1, dec2)
-	return dec2deg(dec_delta)
+	return dec2deg(dec1)-dec2deg(dec2)
 
 def deg2dmstuple(dec):
 	"""Take a number in degrees of arc and return a Dec tuple"""
@@ -101,7 +110,7 @@ def dmsStrFromDeg (decDeg, nFields=3, precision=1, omitExtraFields = False):
 		signStr = "-"
 		decDeg = abs(decDeg)
 	else:
-		signStr = ""
+		signStr = "+"
 
 	# compute a list of output fields; all but the last one are integer
 	remVal = decDeg
@@ -133,7 +142,7 @@ def dmsStrFromDeg (decDeg, nFields=3, precision=1, omitExtraFields = False):
 		if incrNextField:
 			fieldList[fieldInd] += 1
 		if fieldInd == 0:
-			fieldList[fieldInd] = "%s%d" % (signStr,fieldList[fieldInd])
+			fieldList[fieldInd] = "%s%02d" % (signStr,fieldList[fieldInd])
 		else:
 			if fieldList[fieldInd] >= 60:
 				fieldList[fieldInd] -= 60
