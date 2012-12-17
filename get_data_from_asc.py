@@ -11,7 +11,8 @@ def run_sextractor(fits):
 	the input fits file
 	"""
 	sextractor = os.path.join(os.environ['STARLINK_DIR'],'bin/extractor/sex')
-	config_file = './ascfit.sex'
+	config_file = '/home/astrolab/matt_laurence/ascfit.sex'
+	#config_file = '/Users/laurence/Coding/astrotmp/ascfit.sex'
 
 	catalogue = os.path.splitext(fits)[0] + '.cat'
 
@@ -24,6 +25,8 @@ def find_target_in_catalogue(catalogue,ra,dec):
 	Read catalogue and return ra and dec according to sextractor,
 	peak SNR, and FWHM in arcseconds
 	"""
+	ra_lim = dec_lim = 0.002 # look within ~5 arcsec
+	found = False
 	with open(catalogue) as f:
 		for line in f:
 			# skip comments
@@ -31,15 +34,19 @@ def find_target_in_catalogue(catalogue,ra,dec):
 
 			ra_cat,dec_cat = map(float,line.split()[1:3])
 
-			if round(ra-ra_cat,2) == 0 and round(dec-dec_cat,2) == 0:
+			# find closest match
+			if abs(ra-ra_cat) < ra_lim and abs(dec-dec_cat) < dec_lim:
+				ra_lim,dec_lim = abs(ra-ra_cat),abs(dec-dec_cat)
+				# print ra_lim,dec_lim
 				peak,background,fwhm = map(float,line.split()[7:])
-				ra_cat = deg2hmstuple(ra_cat)
-				dec_cat = deg2dmstuple(dec_cat)
+				ra_obj = deg2hmstuple(ra_cat)
+				dec_obj = deg2dmstuple(dec_cat)
 				fwhm = fwhm * 3600 # convert to arcseconds
 				snr = get_snr(peak,background)
-				return ra_cat,dec_cat,snr,fwhm
-		else:
-			raise RuntimeError('No match for the asteroid found')
+				found = True
+	if not found:
+		raise RuntimeError('No match for the asteroid found')
+	return ra_obj,dec_obj,snr,fwhm
 
 def get_snr(peak,bg):
 	"""
