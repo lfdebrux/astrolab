@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os,subprocess,sys
 from math import sqrt
 from utils import deg2dmstuple,deg2hmstuple

@@ -1,11 +1,4 @@
-"""
-Get RA and Dec for an target from JPL Horizons.
-Useage:
-get_jpl_position.py target_name time
-
-where time is in ISO format, ie
-'YYYY-MM-DD hh:mm:ss'
-"""
+#!/usr/bin/python
 
 import signal
 import urllib
@@ -213,6 +206,14 @@ def find_jpl_position(target=None, time=None, session_id=None):
 	return ra, dec
 
 if __name__ == "__main__":
+	"""
+	Get RA and Dec for an target from JPL Horizons.
+	Usage:
+	get_jpl_position.py target_name time
+
+	where time is in ISO format, ie
+	'YYYY-MM-DD hh:mm:ss'
+	"""
 
 	obj_req = sys.argv[1]
 	time  = sys.argv[2].replace('T',' ')
