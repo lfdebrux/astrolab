@@ -92,18 +92,19 @@ if __name__ == '__main__':
 		
 			fits = os.path.basename(file)
 
+			# get data from fits file
 			target,date_time = get_obs_details(fits)
 			ra_jpl,dec_jpl = get_jpl_ra_dec(target,date_time)
 			fits = run_ucac4_astrom(fits)
 			ra_astrom,dec_astrom,snr,fwhm = get_astrom_ra_dec_snr_fwhm(fits)
+
 		except RuntimeError:
 			print 'Error'
 		else:
+			# format for csv
 			ra_delta = str(delta_ra(ra_jpl,ra_astrom))
 			dec_delta = str(delta_dec(dec_jpl,dec_astrom))
-			# fwhm = str(get_fwhm(fits,ra_astrom,dec_astrom))
 			date, time = date_time.split('T')
-			
 			ra_astrom, dec_astrom, ra_jpl, dec_jpl = map(' '.join,(ra_astrom, dec_astrom, ra_jpl, dec_jpl))
 		
 			print target, date_time, '|',
@@ -114,6 +115,7 @@ if __name__ == '__main__':
 			print snr, '|',
 			print fwhm
 
+			# append to csv
 			row = ','.join((target,date,time,ra_astrom,dec_astrom,ra_jpl,dec_jpl,ra_delta,dec_delta,astrom_number,astrom_rms,snr,fwhm))
 			output.write(row)
 			output.write("\n")
