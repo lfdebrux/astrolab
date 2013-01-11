@@ -10,11 +10,11 @@ do
 	if [ "`ls ad*.fits | wc -l`" -gt "1" ]
 	then
 		echo $dir start
-		/remote/aa_64bin/auto_astrom/register_stack ad > /dev/null
+		/remote/aa_64bin/auto_astrom/register_stack ad 2>&1 | tee stack.log > /dev/null
 		
-		date=`basename $dir`
-		asteroid=$(basename $(dirname $dir))
-		mv mosaic.fit ${asteroid}_${date}.fits
+		date=$(basename $(pwd))
+		asteroid=$(basename $(dirname $(pwd)))
+		mv mosaic.fits ${asteroid}_${date}_stacked.fits
 		echo $dir finished
 	fi
 	

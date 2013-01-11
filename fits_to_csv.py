@@ -3,8 +3,9 @@
 import get_jpl_position as jpl
 import os, sys, subprocess, StringIO
 
-from utils import delta_ra,delta_dec
+from utils import delta_ra,delta_dec,ra2deg,dec2deg
 from get_data_from_asc import run_sextractor,find_target_in_catalogue
+from get_number_rms import get_number_rms
 
 UCAC4 = '/remote/aa_64bin/auto_astrom/ucac4_find_astrom.py'
 
@@ -36,15 +37,17 @@ def run_ucac4_astrom(fits):
 	"""
 	Get the most accurate astrometry available
 	"""
-	subprocess.call([UCAC4,fits])
+	with open(os.devnull,"w") as devnull:
+		subprocess.call([UCAC4,fits],stdout=devnull,stderr=devnull)
 
-	return a+fits
+	return 'a'+fits
 
 def get_astrom_ra_dec_snr_fwhm(fits,ra,dec):
 	"""
 	Get the information on the target by running the sextractor
 	and reading the resultant catalogue
 	"""
+	ra,dec = ra2deg(ra),dec2deg(dec)
 	try:
 		catalogue = run_sextractor(fits)
 		ra_astrom,dec_astrom,snr,fwhm = find_target_in_catalogue(catalogue,ra,dec)
@@ -73,10 +76,10 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 
-	if not '.csv' in output_file:
+	if not '.csv' in args.output_file:
 		raise ValueError('Write file is not a csv!')
 
-	output = open(output_file, "w")
+	output = open(args.output_file, "w")
 	headers = "Object,Date,Time,Ast.RA,Ast.Dec,JPL RA,JPL Dec,RA Delta,Dec Delta,Astrom Number,Astrom RMS,SNR,FWHM"
 	output.write(headers)
 	output.write("\n")
@@ -85,8 +88,10 @@ if __name__ == '__main__':
 
 	jpl.new_session()
 
-	for file in fits_files:	
+	for file in args.fits_files:	
 		try:
+			dir = os.path.dirname(file)
+			
 			if not dir is '':
 				os.chdir(dir)
 		
@@ -96,15 +101,17 @@ if __name__ == '__main__':
 			target,date_time = get_obs_details(fits)
 			ra_jpl,dec_jpl = get_jpl_ra_dec(target,date_time)
 			fits = run_ucac4_astrom(fits)
-			ra_astrom,dec_astrom,snr,fwhm = get_astrom_ra_dec_snr_fwhm(fits)
-
+			ra_astrom,dec_astrom,snr,fwhm = get_astrom_ra_dec_snr_fwhm(fits,ra_jpl,dec_jpl)
+			astrom_number,astrom_rms = get_number_rms('astrom.lis')
 		except RuntimeError:
-			print 'Error'
+			pass # make the syntax checker happier
 		else:
 			# format for csv
-			ra_delta = str(delta_ra(ra_jpl,ra_astrom))
-			dec_delta = str(delta_dec(dec_jpl,dec_astrom))
+			ra_delta = str(3600*delta_ra(ra_jpl,ra_astrom)) # get difference in arcseconds
+			dec_delta = str(3600*delta_dec(dec_jpl,dec_astrom)) # get difference in arcseconds
 			date, time = date_time.split('T')
+			snr = str(snr)
+			fwhm = str(fwhm)
 			ra_astrom, dec_astrom, ra_jpl, dec_jpl = map(' '.join,(ra_astrom, dec_astrom, ra_jpl, dec_jpl))
 		
 			print target, date_time, '|',
@@ -121,6 +128,9 @@ if __name__ == '__main__':
 			output.write("\n")
 		finally:
 			# always cleanup and chdir
-			subprocess.call("rm -f aad* *.ASC *.dat *_new *.lis asc* ucac4_stars", shell=True)
-			output.close()
+			rm = "rm -f *.cat *.ASC *.dat *_new *.lis asc* ucac4_stars"
+			rm += " " + fits
+			subprocess.call(rm, shell=True)
 			os.chdir(cwd)
+	
+	output.close()

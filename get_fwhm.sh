@@ -30,3 +30,4 @@ psf $ndf incat=! device=! cofile=pos.txt > /dev/null
 parget fwhm psf
 
 rm pos.txt $sdf
+

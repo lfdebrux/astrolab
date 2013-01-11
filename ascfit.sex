@@ -7,7 +7,7 @@ THRESH_TYPE      RELATIVE
 DETECT_THRESH    2.5 #10 #20 #5 15 #2.5 #1.5
 ANALYSIS_THRESH  5.0 #10 #20 #5 15 #2.5 #1.5
 FILTER           Y
-FILTER_NAME      /home/aa/64bin/auto_astrom/gauss_2.0_3x3.conv #was gauss_5.0_9x9.conv 
+FILTER_NAME      /star/bin/extractor/config/default.conv # use default
 DEBLEND_NTHRESH  32
 DEBLEND_MINCONT  0.005
 CLEAN            Y
@@ -22,7 +22,7 @@ SATUR_LEVEL      50000.0
 GAIN             1.7
 MAG_GAMMA        4.0
 SEEING_FWHM      2.0
-STARNNW_NAME     /home/aa/64bin/auto_astrom/default.nnw
+STARNNW_NAME     /remote/aa_64bin/auto_astrom/default.nnw
 BACK_SIZE        128
 BACK_FILTERSIZE  3
 BACK_TYPE        AUTO
